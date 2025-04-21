@@ -102,3 +102,5 @@ code/tickserver/src/main/cpp/guiListener_main
 **/.cache
 /code/apiExperiment/src/main/cpp/api3
 /gistUtils.iml
+/gradle/wrapper/.#gradle-wrapper.properties
+/.#gradle.properties
