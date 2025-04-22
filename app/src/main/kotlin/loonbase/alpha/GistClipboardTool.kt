@@ -1,6 +1,9 @@
 package importExport.gist
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
 import java.net.URI
@@ -9,11 +12,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.Properties
-import kotlin.io.path.writeText
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import java.util.*
 
 object GistClipboardTool {
     private val token: String by lazy {
@@ -55,7 +54,7 @@ object GistClipboardTool {
         println("Created gist: " + mapper.readTree(response.body()).get("html_url")?.asText())
     }
 
-    fun getMyLastGistAndSaveToFile() {
+    fun getMyLastGist() : String? {
         val request = HttpRequest.newBuilder()
             .uri(URI.create("https://api.github.com/gists?per_page=100"))
             .header("Authorization", "Bearer $token")
@@ -69,16 +68,12 @@ object GistClipboardTool {
         val firstGist = gists.firstOrNull()
         val file = firstGist?.files?.values?.firstOrNull()
 
-        if (file != null) {
-            val outFile = Path.of(System.getProperty("outFile") ?: file.filename)
+        return file?.let {
             val fileResponse = httpClient.send(
-                HttpRequest.newBuilder().uri(URI.create(file.raw_url)).build(),
+                HttpRequest.newBuilder().uri(URI.create(it.raw_url)).build(),
                 HttpResponse.BodyHandlers.ofString()
             )
-            outFile.writeText(fileResponse.body())
-            println("✅ Saved ${file.filename} to $outFile")
-        } else {
-            println("❌ No file found in first gist.")
+            fileResponse.body()
         }
     }
 
