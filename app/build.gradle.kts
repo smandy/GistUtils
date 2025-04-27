@@ -54,12 +54,14 @@ tasks {
     register("push", JavaExec::class) {
         mainClass = "loonbase.alpha.CreateGistKt"
         classpath = sourceSets["main"].runtimeClasspath
+        group = "gists"
     }
 
     register("pull", JavaExec::class) {
-        mainClass = "loonbase.alpha.GetGist"
+        mainClass = "loonbase.alpha.GetGistKt"
         classpath = sourceSets["main"].runtimeClasspath
-
+        group = "gists"
+        
         doFirst {
             systemProperties["outputFile"] = System.getProperty("outputFile")
         }

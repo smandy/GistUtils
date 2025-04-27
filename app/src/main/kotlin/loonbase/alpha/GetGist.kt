@@ -1,18 +1,53 @@
 package loonbase.alpha
 
 import importExport.gist.GistClipboardTool
-//import loonbase.alpha.GistClipboardTool
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
+import java.io.File
+
+fun copyToClipboard(content: String) {
+    val clipboardCommand = when {
+        System.getenv("WAYLAND_DISPLAY") != null -> listOf("wl-copy")
+        System.getenv("DISPLAY") != null -> listOf("xclip", "-selection", "clipboard")
+        else -> null
+    }
+
+    clipboardCommand?.let { command ->
+        try {
+            val process = ProcessBuilder(command)
+                .redirectErrorStream(true)
+                .start()
+
+            process.outputStream.use { output ->
+                output.write(content.toByteArray())
+                output.flush()
+            }
+
+            process.waitFor()
+        } catch (e: Exception) {
+            println("Clipboard copy failed: ${e.message}")
+        }
+    } ?: run {
+        // Windows
+        val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+        clipboard.setContents(StringSelection(content), null)
+        println("Copied to clipboard")
+        //println("No clipboard tool detected, cannot copy to clipboard.")
+    }
+}
+
+
 
 fun main() {
     //val dest = System.getProperty("outFile") ?: error("Need property 'outFile'")
     val lastGist = GistClipboardTool.getMyLastGist() ?: error("No gist found")
+    println("LastGist is $lastGist")
     val outputFile = System.getProperty("output")
     if (outputFile != null) {
         File(outputFile).writeText(lastGist)
         println("Written to $outputFile")
     } else {
-        val clipboard = Toolkit.getDefaultToolkit().systemClipboard
-        clipboard.setContents(StringSelection(lastGist), null)
-        println("Copied to clipboard")
+        copyToClipboard(lastGist)
     }
+
 }
