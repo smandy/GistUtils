@@ -1,6 +1,5 @@
 package loonbase.alpha
 
-import importExport.gist.GistClipboardTool
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 import java.io.File
@@ -42,7 +41,7 @@ fun copyToClipboard(content: String) {
 
 fun main() {
     //val dest = System.getProperty("outFile") ?: error("Need property 'outFile'")
-    val lastGist = GistClipboardTool.getMyLastGist() ?: error("No gist found")
+    val lastGist = getMyLastGist() ?: error("No gist found")
     println("LastGist is $lastGist")
     val outputFile = System.getProperty("output")
     if (outputFile != null) {

@@ -55,12 +55,22 @@ tasks {
         mainClass = "loonbase.alpha.CreateGistKt"
         classpath = sourceSets["main"].runtimeClasspath
         group = "gists"
+        description = "Upload clipboard as a gist"
     }
 
+    register("purge", JavaExec::class) {
+        mainClass = "loonbase.alpha.PurgeGistsKt"
+        classpath = sourceSets["main"].runtimeClasspath
+        group = "gists"
+        description = "Purge gists"
+    }
+
+    
     register("pull", JavaExec::class) {
         mainClass = "loonbase.alpha.GetGistKt"
         classpath = sourceSets["main"].runtimeClasspath
         group = "gists"
+        description = "Download latest gist. use -DoutputFile to ddump to file"
         
         doFirst {
             systemProperties["outputFile"] = System.getProperty("outputFile")
