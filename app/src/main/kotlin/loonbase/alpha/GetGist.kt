@@ -31,8 +31,10 @@ fun copyToClipboard(content: String) {
         // Windows
         val clipboard = Toolkit.getDefaultToolkit().systemClipboard
         clipboard.setContents(StringSelection(content), null)
-        println("Copied to clipboard")
+        println("Copied to clipboard this should be a change ${clipboard}")
         //println("No clipboard tool detected, cannot copy to clipboard.")
+
+        // Noop change.
     }
 }
 
