@@ -105,7 +105,7 @@ fun getMyLastGist(): String? {
 
     return file?.let {
         val fileResponse = httpClient.send(
-            HttpRequest.newBuilder().uri(URI.create(it.rawUrl)).build(),
+            HttpRequest.newBuilder().uri(URI.create(it.raw_url)).build(),
             HttpResponse.BodyHandlers.ofString()
         )
         fileResponse.body()
@@ -121,10 +121,10 @@ private fun String.toJsonString(): String =
     "\"" + this.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n") + "\""
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class GistFile(val filename: String, val rawUrl: String)
+data class GistFile(val filename: String, val raw_url: String)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Gist(val id: String, val htmlUrl: String, val description : String, val files: Map<String, GistFile>)
+data class Gist(val id: String, val html_url: String, val description : String, val files: Map<String, GistFile>)
 
 
 fun main() {
