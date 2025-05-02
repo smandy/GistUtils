@@ -13,12 +13,13 @@ import java.net.http.HttpResponse
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
-
+import kotlin.io.path.inputStream
+import kotlin.io.path.readText
 
 private val token: String by lazy {
     val props = Properties()
     val secretsFile = Path.of(System.getProperty("user.home"), "secrets.properties")
-    Files.newInputStream(secretsFile).use { props.load(it) }
+    props.load(secretsFile.inputStream())
     props.getProperty("github.token") ?: error("Missing github.token in secrets.properties")
 }
 
