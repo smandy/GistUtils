@@ -24,23 +24,30 @@ private val token: String by lazy {
 private val httpClient = HttpClient.newHttpClient()
 private val mapper = jacksonObjectMapper().registerKotlinModule()
 
+data class GistFileContent(val content: String)
+data class GistPayload(
+    val description: String,
+    val public: Boolean,
+    val files: Map<String, GistFileContent>
+)
+
 fun createNewGistFromClipboardContent(
     filename: String = "snippet.kt",
     description: String = "Clipboard paste",
     isPublic: Boolean = false
 ) {
     val content = getClipboardText()
-    val body = """
-            {
-              "description": "$description",
-              "public": $isPublic,
-              "files": {
-                "$filename": {
-                  "content": ${content.toJsonString()}
-                }
-              }
-            }
-        """.trimIndent()
+    if (content.isNullOrBlank()) {
+        error("Clipboard is empty! Nothing to upload as gist.")
+    }
+
+    val payload = GistPayload(
+        description = description,
+        public = isPublic,
+        files = mapOf(filename to GistFileContent(content))
+    )
+
+    val body = mapper.writeValueAsString(payload)
 
     val request = HttpRequest.newBuilder()
         .uri(URI.create("https://api.github.com/gists"))
@@ -50,6 +57,7 @@ fun createNewGistFromClipboardContent(
         .build()
 
     val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+    prettyPrint(response.body())
     println("Created gist: " + mapper.readTree(response.body()).get("html_url")?.asText())
 }
 
