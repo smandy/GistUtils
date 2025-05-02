@@ -14,6 +14,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
+
 private val token: String by lazy {
     val props = Properties()
     val secretsFile = Path.of(System.getProperty("user.home"), "secrets.properties")
@@ -37,7 +38,7 @@ fun createNewGistFromClipboardContent(
     isPublic: Boolean = false
 ) {
     val content = getClipboardText()
-    if (content.isNullOrBlank()) {
+    if (content.isBlank()) {
         error("Clipboard is empty! Nothing to upload as gist.")
     }
 
@@ -103,7 +104,7 @@ fun getMyLastGist(): String? {
 
     return file?.let {
         val fileResponse = httpClient.send(
-            HttpRequest.newBuilder().uri(URI.create(it.raw_url)).build(),
+            HttpRequest.newBuilder().uri(URI.create(it.rawUrl)).build(),
             HttpResponse.BodyHandlers.ofString()
         )
         fileResponse.body()
@@ -112,17 +113,17 @@ fun getMyLastGist(): String? {
 
 private fun getClipboardText(): String {
     val clipboard = Toolkit.getDefaultToolkit().systemClipboard
-    return clipboard.getData(DataFlavor.stringFlavor) as String
+    return (clipboard.getData(DataFlavor.stringFlavor) as String).also { println(it) }
 }
 
 private fun String.toJsonString(): String =
     "\"" + this.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n") + "\""
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class GistFile(val filename: String, val raw_url: String)
+data class GistFile(val filename: String, val rawUrl: String)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class Gist(val id: String, val html_url: String, val description : String, val files: Map<String, GistFile>)
+data class Gist(val id: String, val htmlUrl: String, val description : String, val files: Map<String, GistFile>)
 
 
 fun main() {
