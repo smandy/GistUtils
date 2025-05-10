@@ -127,7 +127,4 @@ data class GistFile(val filename: String, val raw_url: String)
 data class Gist(val id: String, val html_url: String, val description : String, val files: Map<String, GistFile>)
 
 
-fun main() {
-    listGists()
-}
 
