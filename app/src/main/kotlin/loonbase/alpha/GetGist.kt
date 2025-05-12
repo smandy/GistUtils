@@ -6,7 +6,7 @@ import java.io.File
 
 fun copyToClipboard(content: String) {
     val clipboardCommand = when {
-        System.getenv("WAYLAND_DISPLAY") != null -> listOf("wl-copy")
+        System.getenv("WAYLAND_DISPLAY") != null -> listOf("wl-copy") // For future!
         System.getenv("DISPLAY") != null -> listOf("xclip", "-selection", "clipboard")
         else -> null
     }
@@ -31,9 +31,6 @@ fun copyToClipboard(content: String) {
         val clipboard = Toolkit.getDefaultToolkit().systemClipboard
         clipboard.setContents(StringSelection(content), null)
         println("Copied to clipboard this should be a change ${clipboard}")
-        //println("No clipboard tool detected, cannot copy to clipboard.")
-
-        // Noop change.
     }
 }
 
