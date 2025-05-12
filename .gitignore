@@ -104,3 +104,4 @@ code/tickserver/src/main/cpp/guiListener_main
 /gistUtils.iml
 /gradle/wrapper/.#gradle-wrapper.properties
 /.#gradle.properties
+/.kotlin/sessions/*.salive
